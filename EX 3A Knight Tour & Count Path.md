@@ -1,60 +1,73 @@
 # EX 3A Knight Tour & Count Path
-
-## DATE:
+## DATE:18/03/2025
 ## AIM:
 To write a python program to find minimum steps to reach to specific cell in minimum moves by knight
 
-
 ## Algorithm
-1. Define the dimensions of the matrix `R` and `C` (rows and columns), and set `MAX_K` as the maximum value for `k`.  
-2. Define a recursive function `pathCountDPRecDP` that computes the number of paths to reach the bottom-right corner from the top-left corner, with the exact sum `k`.  
-3. If `m < 0`, `n < 0`, or `k < 0`, return 0 as these are invalid paths.  
-4. If the current cell `(m, n)` is the top-left corner `(0, 0)` and the sum `k` equals `mat[m][n]`, return 1 (a valid path).  
-5. If the result for the current state `(m, n, k)` is already computed (i.e., `dp[m][n][k] != -1`), return the cached result.  
-6. Otherwise, recursively compute the number of paths by considering two possible moves:  
-   - Move up by decreasing `m` by 1, with the new sum being `k - mat[m][n]`.  
-   - Move left by decreasing `n` by 1, with the new sum being `k - mat[m][n]`.  
-7. Store the result of the recursive calls in `dp[m][n][k]`.  
-8. Define the function `pathCountDP` that calls `pathCountDPRecDP` starting from the bottom-right corner `(R - 1, C - 1)` with the target sum `k`.  
-9. Initialize the `dp` table with all values set to `-1` to indicate that no values have been computed.  
-10. Call the `pathCountDP` function with the matrix and the target sum `k`, and print the result.
-
+1. Use Breadth-First Search (BFS) starting from the knight’s position.
+   
+2. Enqueue the starting position with distance 0 and mark it as visited.
+   
+3. At each step, dequeue a cell and check if it is the target position.
+   
+4. If not, move the knight in all 8 possible moves and enqueue valid, unvisited cells with dist + 1.
+   
+5. Repeat until the target is reached, and return the number of steps (distance).
+   
 ## Program:
-```
-/*
-Program to implement to find minimum steps to reach to specific cell in minimum moves by knight.
-Developed by: BHARATHWAJ R
-Register Number: 212222240019
-R = 3
-C = 3
-MAX_K = 1000
-def pathCountDPRecDP(mat, m, n, k):
-    if m < 0 or n < 0 or k < 0:
-        return 0
-    elif m == 0 and n == 0:
-        return k == mat[m][n]
-    if (dp[m][n][k] != -1):
-        return dp[m][n][k]
-    dp[m][n][k] = (pathCountDPRecDP(mat, m - 1, n, k - mat[m][n]) +
-                   pathCountDPRecDP(mat, m, n - 1, k - mat[m][n]))
+#### Program to implement to find minimum steps to reach to specific cell in minimum moves by knight.
+#### Developed by: BHARATHWAJ R
+#### Register Number: 212222240019
+
+```PY
+class cell:
      
-    return dp[m][n][k]
-def pathCountDP(mat, k):
-    return pathCountDPRecDP(mat, R - 1, C - 1, k)
-k = 12
-dp = [[ [-1 for col in range(MAX_K)]
-            for col in range(C)]
-            for row in range(R)]
-mat = [[1, 2, 3],
-       [4, 6, 5],
-       [3, 2, 1]]
-print(pathCountDP(mat, k)) 
-*/
+    def __init__(self, x = 0, y = 0, dist = 0):
+        self.x = x
+        self.y = y
+        self.dist = dist
+
+def isInside(x, y, N):
+    if (x >= 1 and x <= N and
+        y >= 1 and y <= N):
+        return True
+    return False
+def minStepToReachTarget(knightpos,
+                         targetpos, N):
+    # add your code here
+    #Start here
+    dx = [2, 2, -2, -2, 1, 1, -1, -1]
+    dy = [1, -1, 1, -1, 2, -2, 2, -2]
+    queue = []
+    queue.append(cell(knightpos[0], knightpos[1], 0))
+    visited = [[False for i in range(N + 1)] for j in range(N + 1)]
+    visited[knightpos[0]][knightpos[1]] = True
+    while(len(queue) > 0):
+        t = queue[0]
+        queue.pop(0)
+        if(t.x == targetpos[0] and
+           t.y == targetpos[1]):
+            return t.dist
+        for i in range(8):
+            x = t.x + dx[i]
+            y = t.y + dy[i]
+            if(isInside(x, y, N) and not visited[x][y]):
+                visited[x][y] = True
+                queue.append(cell(x, y, t.dist + 1))
+    
+if __name__=='__main__':
+    N = 30
+    knightpos = [1, 1]
+    targetpos = [30, 30]
+    print(minStepToReachTarget(knightpos,
+                               targetpos, N))
 ```
 
 ## Output:
+![image](https://github.com/user-attachments/assets/748b3a6e-6c75-4c90-ac55-22b032a8dd34)
 
-![Screenshot 2025-04-29 141715](https://github.com/user-attachments/assets/c6dc5cda-c073-4ed0-bded-d73ecf246d7d)
+
+
 
 
 ## Result:
